@@ -1,0 +1,63 @@
+﻿
+<div class="py-3">
+    <h2>Send some data that will be read by an input formatter</h2>
+    <button onclick="postBadFormatterData()" type="submit">Do it!</button>
+</div>
+
+<div class="py-3">
+    <h2>Send some data that will be read as an enum</h2>
+    <label>Favorite Pet:</label><input type="text" id="pet"/>
+    <button onclick="postBadEnumData()" type="submit">Do it!</button>
+</div>
+
+<div class="py-3">
+    <h2>Send some data that will be validated</h2>
+    <label>Email Address:</label><input type="text" id="email" />
+    <button onclick="postBadParameterData()" type="submit">Do it!</button>
+</div>
+
+<textarea id="results" style="width:80%" class="py-3"></textarea>
+<script>
+    function postBadFormatterData (e) {
+        fetch("/BadFormatterData", {
+            body: {},
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }).then(response => response.text().then(text => {
+            var element = document.getElementById("results");
+            element.innerText = text;
+        }));
+    }
+
+    function postBadEnumData(e) {
+        var params = new URLSearchParams();
+        params.append("pet", document.getElementById("pet").value);
+        fetch("/EnumData", {
+            body: params,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        }).then(response => response.text().then(text => {
+            var element = document.getElementById("results");
+            element.innerText = text;
+        }));
+    }
+
+    function postBadParameterData(e) {
+        var params = new URLSearchParams();
+        params.append("email", document.getElementById("email").value);
+        fetch("/ValidateParameterData", {
+            body: params,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        }).then(response => response.text().then(text => {
+            var element = document.getElementById("results");
+            element.innerText = text;
+        }));
+    }
+</script>

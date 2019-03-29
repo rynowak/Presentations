@@ -1,0 +1,13 @@
+﻿@model TodosViewModel
+
+<ul>
+    @foreach (var todo in Model.Todos)
+    {
+        <li>@todo.Title</li>
+    }
+</ul>
+
+<form asp-controller="Todos" asp-action="Index">
+    <input type="text" name="title" placeholder="What do you need to do?" />
+    <button type="submit">Add it!</button>
+</form>

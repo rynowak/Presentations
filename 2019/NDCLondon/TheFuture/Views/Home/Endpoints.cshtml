@@ -1,0 +1,18 @@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Routing
+@model IReadOnlyList<Endpoint>
+
+@foreach (var endpoint in Model)
+{
+    <h3>Action: @endpoint.DisplayName</h3>
+    <p>Route: @((endpoint as RouteEndpoint)?.RoutePattern.RawText)</p>
+    <p>Metadata:</p>
+    <ul>
+        @foreach (var metadata in endpoint.Metadata)
+        {
+            <li>@metadata</li>
+        }
+    </ul>
+
+    <hr style="width:60%"/>
+}

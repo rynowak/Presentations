@@ -1,0 +1,26 @@
+﻿
+<h2>Your App's Routing state machine</h2>
+<h2 id="loading">Loading...</h2>
+<div id="graph-yo"></div>
+
+<!-- Using https://github.com/mdaines/viz.js -->
+<script src="/js/viz.js"></script>
+<script src="/js/full.render.js"></script>
+<script type="text/javascript">
+    let viz = new Viz();
+
+    fetch('/graph')
+        .then(function (response) {
+            return response.text();
+        })
+        .then(function (graph) {
+            return viz.renderSVGElement(graph);
+        })
+        .then(function (element) {
+            document.getElementById('loading').remove();
+            document.getElementById('graph-yo').appendChild(element);
+        })
+        .catch(function (error) {
+            console.error(error);
+        })
+</script>

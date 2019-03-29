@@ -1,0 +1,18 @@
+﻿@page
+@model Evolution.Pages.TodosPageModel
+
+@{ 
+    Layout = "_Layout";
+}
+
+<ul>
+    @foreach (var todo in Model.Todos)
+    {
+        <li>@todo.Title</li>
+    }
+</ul>
+
+<form asp-page="/TodosPage">
+    <input type="text" name="title" placeholder="What do you need to do?" />
+    <button type="submit">Add it!</button>
+</form>

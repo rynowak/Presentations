@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Mvc.Abstractions
+@using Microsoft.AspNetCore.Mvc.Controllers
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure
+
+@model IReadOnlyList<ActionDescriptor>
+@inject IPageLoader PageLoader
+
+@foreach (var action in Model)
+{
+    if (action is ControllerActionDescriptor controller)
+    {
+        <h3>Action: @controller.DisplayName</h3>
+        <p>Type: @controller.ControllerTypeInfo.FullName</p>
+        <p>Filters:</p>
+        <ul>
+            @foreach (var filter in controller.FilterDescriptors)
+            {
+                <li>@filter.Filter.GetType().FullName</li>
+            }
+        </ul>
+
+        <p>Properties: @(controller.BoundProperties.Count == 0 ? "(none)" : string.Empty)</p>
+        <ul>
+            @foreach (var property in controller.BoundProperties)
+            {
+                <li>
+                    @property.ParameterType.FullName - @property.Name - Binding Info: @((property.BindingInfo?.BindingSource ?? BindingSource.ModelBinding).DisplayName)
+                </li>
+            }
+        </ul>
+
+        <p>Parameters: @(controller.Parameters.Count == 0 ? "(none)" : string.Empty)</p>
+        <ul>
+            @foreach (var parameter in controller.Parameters)
+            {
+                <li>
+                    @parameter.ParameterType.FullName - @parameter.Name - Binding Info: @((parameter.BindingInfo?.BindingSource ?? BindingSource.ModelBinding).DisplayName)
+                </li>
+            }
+        </ul>
+    }
+    else if (action is PageActionDescriptor page)
+    {
+        var loaded = PageLoader.Load(page);
+
+        <h3>Action: @loaded.DisplayName</h3>
+        <p>Type: @loaded.HandlerTypeInfo.FullName</p>
+        <p>Filters:</p>
+        <ul>
+            @foreach (var filter in loaded.FilterDescriptors)
+            {
+                <li>@filter.Filter.GetType().FullName</li>
+            }
+        </ul>
+
+        <p>Properties: @(loaded.BoundProperties.Count == 0 ? "(none)" : string.Empty)</p>
+        <ul>
+            @foreach (var property in loaded.BoundProperties)
+            {
+                <li>
+                    @property.ParameterType.FullName - @property.Name - Binding Info: @((property.BindingInfo?.BindingSource ?? BindingSource.ModelBinding).DisplayName)
+                </li>
+            }
+        </ul>
+
+        @foreach (var handler in loaded.HandlerMethods)
+        {
+            <p>Handler: @handler.MethodInfo.Name</p>
+            <p>Parameters: @(handler.Parameters.Count == 0 ? "(none)" : string.Empty)</p>
+            <ul>
+                @foreach (var parameter in handler.Parameters)
+                {
+                    <li>
+                        @parameter.ParameterType.FullName - @parameter.Name - Binding Info: @((parameter.BindingInfo?.BindingSource ?? BindingSource.ModelBinding).DisplayName)
+                    </li>
+                }
+            </ul>
+        }
+    }
+
+    <hr style="width:60%"/>
+}
