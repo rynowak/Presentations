@@ -1,0 +1,21 @@
+﻿@page "/select"
+
+<h1 class="@MdcTypography.H4">Select samples</h1>
+
+<p>See <code>Select.cshtml</code> for sources.</p>
+
+<MdcSelect Label="Kitten breed" @bind-Value="@kittenBreed">
+    <option value=""></option>
+    <option value="brit-short">British Shorthair</option>
+    <option value="russ-blue">Russian Blue</option>
+    <option value="ice-invis">Icelandic Invisible</option>
+</MdcSelect>
+
+@if (!string.IsNullOrEmpty(kittenBreed))
+{
+    <p>Selected: <strong>@kittenBreed</strong></p>
+}
+
+@functions {
+    string kittenBreed;
+}

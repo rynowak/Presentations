@@ -1,0 +1,6 @@
+﻿This project contains content from third parties, including:
+
+- https://github.com/material-components/material-components-web
+- https://fonts.google.com/
+
+See external sources for license information.

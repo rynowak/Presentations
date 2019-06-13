@@ -1,0 +1,32 @@
+@if (Items.Count == 0)
+{
+    <h3>There's nothing here, aren't you busy?</h3>
+}
+else
+{
+    <select @bind="sort">
+        <option value="@SortOrder.Descending">@SortOrder.Descending</option>
+        <option value="@SortOrder.Ascending">@SortOrder.Ascending</option>
+    </select>
+    <MdcList Items="@TodoItem.Sort(sort, Items)" Context="item">
+        <Icon>@(item.IsDone ? "done_outline" : "")</Icon>
+        <Title>@item.Title</Title>
+        <Subtitle>@item.Description</Subtitle>
+        <Actions>
+            <div style="width: 10rem">
+                @if (OnItemChange.HasDelegate)
+                {
+                    <MdcSwitch @bind-Checked="@item.IsDone"
+                               Label="Todo/Done"
+                               OnChange="OnItemChange" />
+                }
+            </div>
+        </Actions>
+    </MdcList>
+}
+
+@code {
+    SortOrder sort = SortOrder.Descending;
+    [Parameter] List<TodoItem> Items { get; set; }
+    [Parameter] EventCallback OnItemChange { get; set; }
+}

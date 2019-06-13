@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <ComponentsPackageVersion>3.0.0-preview6.19305.13</ComponentsPackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="$(ComponentsPackageVersion)" />
+  </ItemGroup>
+
+  <!-- Pack settings -->
+  <Target Name="PublishAll" BeforeTargets="_IntermediatePack">
+    <PropertyGroup>
+      <PackageVersion>0.1.0-alpha-$([System.DateTime]::Now.ToString(yyyyMMddhhmmss))</PackageVersion>
+    </PropertyGroup>
+  </Target>
+
+</Project>

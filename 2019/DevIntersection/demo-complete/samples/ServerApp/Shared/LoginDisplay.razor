@@ -1,0 +1,29 @@
+@inject IUriHelper UriHelper
+<AuthorizeView>
+    <Authorized>
+        <a href="Identity/Account/LogOut">
+            <MdcButton>
+                <i class="material-icons">exit_to_app</i>
+                Log out
+            </MdcButton>
+        </a>
+        <div style="margin: 1em">
+            <i class="material-icons">account_circle</i>
+            Hello, @context.User.Identity.Name!
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <a href="Identity/Account/Register">
+            <MdcButton>
+                <i class="material-icons">speaker_notes</i>
+                Register
+            </MdcButton>
+        </a>
+        <a href="Identity/Account/Login">
+            <MdcButton>
+                <i class="material-icons">launch</i>
+                Log in
+            </MdcButton>
+        </a>
+    </NotAuthorized>
+</AuthorizeView>

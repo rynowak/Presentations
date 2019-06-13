@@ -1,0 +1,25 @@
+﻿@inherits MdcComponentBase
+@inject IJSRuntime jsRuntime
+<button type="@Type" @ref="buttonElem" disabled="@(!Enabled)" class="mdc-button @ButtonStyle @Class" data-mdc-dialog-action="@DialogAction" @onclick="@OnClick">
+    @ChildContent
+</button>
+@functions {
+    public const string None = "";
+    public const string Raised = "mdc-button--raised";
+
+    ElementRef buttonElem;
+
+    [Parameter] string Type { get; set; } = "button";
+    [Parameter] bool Enabled { get; set; } = true;
+    [Parameter] RenderFragment ChildContent { get; set; }
+    [Parameter] EventCallback OnClick { get; set; }
+    [Parameter] string ButtonStyle { get; set; } = Raised;
+    [Parameter] string Class { get; set; }
+    [Parameter] string DialogAction { get; set; }
+
+    protected override Task OnAfterFirstRenderAsync()
+        => jsRuntime.InvokeAsync<object>("BlazorMaterial.button.init", buttonElem);
+
+    public static MarkupString Icon(string name)
+        => (MarkupString)$"<i class=\"material-icons mdc-button__icon\">{name}</i>";
+}

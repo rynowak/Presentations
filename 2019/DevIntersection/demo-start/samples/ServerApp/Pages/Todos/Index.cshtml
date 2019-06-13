@@ -1,0 +1,12 @@
+﻿@page
+@model ServerApp.Pages.NewFolder.IndexModel
+@{  Layout = "_Layout"; }
+
+<h3>List of todos...</h3>
+
+@foreach (var item in Model.Items)
+{
+    <p>
+        <strong>@item.Title</strong> @item.Description
+    </p>
+}

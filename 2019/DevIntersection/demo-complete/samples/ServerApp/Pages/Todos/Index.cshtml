@@ -1,0 +1,7 @@
+﻿@page
+@model ServerApp.Pages.NewFolder.IndexModel
+@{  Layout = "_Layout"; }
+
+<h3>List of todos...</h3>
+
+@(await Html.RenderComponentAsync<ServerApp.Shared.TodoDisplay>(new { Items = Model.Items, }))

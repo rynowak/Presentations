@@ -1,0 +1,142 @@
+
+## Checkpoint 1 Create Simple Todo list 
+
+```
+<h3>Keep track of stuff to do...</h3>
+
+<form>
+    <div>
+        <p>Enter something you need to do.</p>
+        <input type="text" />
+    </div>
+
+    <div>
+        <p>Description</p>
+        <input type="text" />
+    </div>
+
+    <button type="submit">Add</button>
+</form>
+```
+
+```
+<hr />
+
+<h3>Things to do...</h3>
+
+@if (items.Count == 0)
+{
+    <h3>There's nothing here, aren't you busy?</h3>
+}
+else
+{
+    <select>
+        <option value="@SortOrder.Descending">@SortOrder.Descending</option>
+        <option value="@SortOrder.Ascending">@SortOrder.Ascending</option>
+    </select>
+    <ul>
+
+    </ul>
+}
+```
+
+```
+    List<TodoItem> items = new List<TodoItem>();
+    TodoItem item = new TodoItem();
+    SortOrder sort = SortOrder.Descending;
+
+    void OnSubmit()
+    {
+        item.CreatedAt = DateTime.Now;
+        items.Add(item);
+        item = new TodoItem();
+    }
+```
+
+## Checkpoint 2 Refactor into components
+
+```
+    [Parameter] EventCallback OnSubmit { get; set; }
+    [Parameter] TodoItem Item { get; set; }
+```
+
+```
+    SortOrder sort = SortOrder.Descending;
+    [Parameter] List<TodoItem> Items { get; set; }
+```
+
+## Checkpoint 3 Add material design
+
+```
+    <MdcTextField Label="Title" @bind-Value="Item.Title"/>
+    <MdcTextField Label="Description" @bind-Value="Item.Description"/>
+    <MdcButton Type="submit">Add</MdcButton>
+```
+
+```
+    <MdcList Items="@TodoItem.Sort(sort, Items)" Context="item">
+        <Icon>@(item.IsDone ? "done_outline" : "")</Icon>
+        <Title>@item.Title</Title>
+        <Subtitle>@item.Description</Subtitle>
+        <Actions>
+            <div style="width: 10rem">
+                <MdcSwitch @bind-Checked="@item.IsDone" Label="Todo/Done" />
+            </div>
+        </Actions>
+    </MdcList>
+```
+
+## Checkpoint 4
+
+```
+protected override Task OnInitAsync()
+    {
+        return LoadItemsAsync();
+    }
+
+    async Task OnSubmitAsync()
+    {
+        item.CreatedAt = DateTime.Now;
+        DbContext.Todos.Add(item);
+        item = new TodoItem();
+
+        await DbContext.SaveChangesAsync();
+        await LoadItemsAsync();
+    }
+
+    async Task OnItemChangeAsync()
+    {
+        await DbContext.SaveChangesAsync();
+        await LoadItemsAsync();
+    }
+
+    async Task LoadItemsAsync()
+    {
+        items = await DbContext.Todos.ToListAsync();
+    }
+```
+
+## Checkpoint 5
+
+```
+<MdcDialog Title="Loading your todos" @ref="dialog">
+    <Body>
+        <MdcLinearProgress />
+    </Body>
+</MdcDialog>
+```
+
+## Checkpoint 6
+
+```
+<AuthorizeView>
+    <NotAuthorized>
+        <p>
+            Thanks for your interest, but you need to be logged in to see our todos.
+        </p>
+    </NotAuthorized>
+    <Authorized>
+        
+    </Authorized>
+</AuthorizeView>
+```
