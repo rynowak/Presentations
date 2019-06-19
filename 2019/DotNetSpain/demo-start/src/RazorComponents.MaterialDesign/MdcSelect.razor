@@ -1,0 +1,28 @@
+﻿@inherits MdcComponentBase
+@inject IJSRuntime jsRuntime
+
+<div @ref="selectElem" class="mdc-select">
+  <select class="mdc-select__native-control" value=@Value @onchange=@OnValueChangedAsync>
+    @ChildContent
+  </select>
+  <label class="mdc-floating-label">@Label</label>
+  <div class="mdc-line-ripple"></div>
+</div>
+
+@functions {
+    [Parameter] string Label { get; set; }
+    [Parameter] RenderFragment ChildContent { get; set; }
+    [Parameter] string Value { get; set; }
+    [Parameter] EventCallback<string> ValueChanged { get; set; }
+
+    ElementRef selectElem;
+
+    Task OnValueChangedAsync(UIChangeEventArgs eventArgs)
+    {
+        Value = (string)eventArgs.Value;
+        return ValueChanged.InvokeAsync(Value);
+    }
+
+    protected override Task OnAfterFirstRenderAsync()
+        => jsRuntime.InvokeAsync<object>("BlazorMaterial.select.init", selectElem);
+}

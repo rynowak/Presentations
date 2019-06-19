@@ -1,0 +1,44 @@
+﻿@page "/button"
+
+<h1 class="@MdcTypography.H4">Button samples</h1>
+
+See <code>Button.cshtml</code> for sources.
+
+<p>
+    <MdcButton onclick="@LogMessage">
+        Default style (raised)
+    </MdcButton>
+</p>
+
+<p>
+    <MdcButton onclick="@LogMessage" ButtonStyle="@MdcButton.None">
+        None style
+    </MdcButton>
+</p>
+
+<p>
+    <MdcButton onclick="@LogMessage" Enabled="@false">
+        Enabled = false
+    </MdcButton>
+</p>
+
+<p>
+    <MdcButton onclick="@LogMessage">
+        @MdcButton.Icon("save")
+        With icon
+    </MdcButton>
+</p>
+
+<ul>
+    @foreach (var logEntry in log)
+    {
+        <li>@logEntry</li>
+    }
+</ul>
+
+@functions {
+    List<string> log = new List<string>();
+
+    void LogMessage()
+        => log.Add("You clicked");
+}

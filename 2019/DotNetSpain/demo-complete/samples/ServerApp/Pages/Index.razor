@@ -1,0 +1,65 @@
+﻿@page "/"
+@inject ApplicationDbContext DbContext
+
+<AuthorizeView>
+    <NotAuthorized>
+        <p>
+            Thanks for your interest, but you need to be logged in to see our todos.
+        </p>
+    </NotAuthorized>
+    <Authorized>
+        <h3 class="super-cool">Keep track of stuff to do...</h3>
+
+        <TodoEditor Item="item" OnSubmit="OnSubmitAsync" />
+
+        <hr />
+
+        <h3>Things to do...</h3>
+
+        @if (items != null)
+        {
+            <TodoDisplay Items="items" OnItemChange="OnItemChangeAsync" />
+        }
+
+        <MdcDialog @ref="dialog" Title="Loading...">
+            <Body>
+                <MdcLinearProgress />
+            </Body>
+        </MdcDialog>
+    </Authorized>
+</AuthorizeView>
+
+@functions {
+    List<TodoItem> items = new List<TodoItem>();
+    TodoItem item = new TodoItem();
+    MdcDialog dialog;
+
+    protected override async Task OnInitAsync()
+    {
+        await LoadItemsAsync();
+    }
+
+    async Task OnSubmitAsync()
+    {
+        _ = dialog.ShowAsync();
+        item.CreatedAt = DateTime.Now;
+        DbContext.Todos.Add(item);
+        item = new TodoItem();
+
+        await DbContext.SaveChangesAsync();
+        await Task.Delay(1000);
+        await LoadItemsAsync();
+        await dialog.HideAsync();
+    }
+
+    async Task OnItemChangeAsync()
+    {
+        await DbContext.SaveChangesAsync();
+        await LoadItemsAsync();
+    }
+
+    async Task LoadItemsAsync()
+    {
+        items = await DbContext.Todos.ToListAsync();
+    }
+}

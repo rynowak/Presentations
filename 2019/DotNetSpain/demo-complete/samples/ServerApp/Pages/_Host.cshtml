@@ -1,0 +1,22 @@
+﻿@page "/"
+@namespace ServerApp.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>Component Demos</title>
+    <base href="/" />
+    <link rel="stylesheet" href="css/site.css" />
+    <link href="_content/RazorComponentsMaterialDesign/styles.css" rel="stylesheet" />
+    <script src="_content/RazorComponentsMaterialDesign/script.js"></script>
+    <script src="_content/RazorComponentsMaterialDesign/lib/material-components-web.js"></script>
+</head>
+<body class="mdc-typography">
+    <app>@(await Html.RenderComponentAsync<App>())</app>
+
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<form @onsubmit="@OnSubmit">
+    <MdcTextField 
+        Label="Title" 
+        @bind-Value="Item.Title" />
+
+    <MdcTextField
+        Label="Description"
+        @bind-Value="Item.Description" />
+
+    <MdcButton Type="submit">Add</MdcButton>
+</form>
+
+@code {
+    [Parameter] EventCallback OnSubmit { get; set; }
+    [Parameter] TodoItem Item { get; set; }
+}

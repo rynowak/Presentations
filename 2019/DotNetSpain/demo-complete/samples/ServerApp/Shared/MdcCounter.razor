@@ -1,0 +1,13 @@
+<p>Current count is: @count</p>
+<MdcButton OnClick="OnClicked">
+    @MdcButton.Icon("exposure_plus_1") Click me!
+</MdcButton>
+
+@code {
+    int count;
+
+    void OnClicked()
+    {
+        count++;
+    }
+}

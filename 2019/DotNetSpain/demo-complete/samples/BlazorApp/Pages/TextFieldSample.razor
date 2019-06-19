@@ -1,0 +1,16 @@
+﻿@page "/textfield"
+
+<h1 class="@MdcTypography.H4">Text field samples</h1>
+
+<p>See <code>TextField.cshtml</code> for sources.</p>
+
+<MdcTextField Label="Type in some text" @bind-Value="@currentValue" />
+
+@if (currentValue != null)
+{
+    <p>You typed: <strong>@currentValue</strong></p>
+}
+
+@functions {
+    string currentValue;
+}

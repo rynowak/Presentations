@@ -1,0 +1,87 @@
+body {
+    height: 100vh;
+    margin: 0;
+    --mdc-theme-primary: #941d80;
+    --mdc-theme-secondary: #ffab40;
+    --mdc-theme-background: #fff;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+}
+app {
+    display: flex;
+    height: 100%;
+}
+
+h1 {
+    margin-bottom: 0.5rem;
+    margin-top: 1.8rem;
+}
+
+.mdc-drawer-app-content {
+    flex: auto;
+    overflow: auto;
+}
+
+.main-content {
+    overflow: auto;
+    height: 100%;
+    padding: 0 20px;
+    background-color: #ddd;
+}
+
+.main-content-card {
+    display: inherit !important;
+    margin: 20px 0;
+    padding: 1px 24px 32px 24px;
+}
+
+.app-bar {
+    position: absolute;
+}
+
+.mdc-top-app-bar-content {
+    display: flex;
+    align-items: center;
+    margin-right: 2rem;
+}
+
+    .mdc-top-app-bar-content i.material-icons {
+        margin-right: 8px
+    }
+
+.mdc-top-app-bar .mdc-button--raised {
+    background-color: rgba(255,255,255,0.15) !important;
+}
+
+.demo-list {
+    border: 1px solid rgba(0,0,0,.2);
+    border-bottom: none;
+    background-color: white;
+}
+
+    .demo-list .mdc-list-item__meta {
+        display: flex;
+        align-items: center;
+        margin-right: 1rem;
+    }
+
+.page-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+    .page-header .mdc-typography--headline5 {
+        margin: 0.8rem 0;
+    }
+
+    .page-header .page-header-right {
+        margin-left: auto;
+    }
+
+/* When sidebar is open, shrink header bar so it all stays on screen */
+.mdc-drawer.mdc-drawer--open:not(.mdc-drawer--closing) + .mdc-drawer-app-content .mdc-top-app-bar {
+    width: calc(100% - 256px);
+}
