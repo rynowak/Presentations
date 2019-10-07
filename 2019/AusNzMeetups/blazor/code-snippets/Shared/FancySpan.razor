@@ -1,0 +1,10 @@
+﻿<span style="@(IsBold ? "font-weight: bold;" : string.Empty)">
+    @ChildContent
+</span>
+
+@code {
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    [Parameter] public bool IsBold { get; set; }
+}

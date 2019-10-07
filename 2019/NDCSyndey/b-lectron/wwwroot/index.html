@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>B-lectron</title>
+    <base href="./" />
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <app>Loading...</app>
+
+    <script src="../bin/Debug/netcoreapp3.0/electron-js/components.electron.js"></script>
+    <script type="text/javascript">
+    (function(){
+        const { ipcRenderer } = require("electron");
+        window.addEventListener('contextmenu', (e) => {
+            e.preventDefault()
+            ipcRenderer.send('show-context-menu');
+        }, false);
+      }());
+    </script>
+</body>
+</html>

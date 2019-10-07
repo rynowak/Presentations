@@ -1,0 +1,36 @@
+﻿@inject NavigationManager Navigation
+@using System.Reflection;
+
+<CascadingValue Value="this" IsFixed="true">
+    @ChildContent
+</CascadingValue>
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    private Menu Menu => Electron.Menu;
+
+    public void SetContextMenu(params MenuItem[] items)
+    {
+        var window = Electron.WindowManager.BrowserWindows.Single();
+
+        var field = typeof(Menu).GetField("_contextMenuItems", BindingFlags.Instance | BindingFlags.NonPublic);
+        ((IDictionary<int, List<MenuItem>>)field.GetValue(Menu)).Clear();
+
+        Menu.SetContextMenu(window, items);
+    }
+
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += LocationChanged;
+
+        Electron.IpcMain.On("show-context-menu", (args) => 
+        {
+            Electron.Menu.ContextMenuPopup(Electron.WindowManager.BrowserWindows.Single());
+        });
+    }
+
+    private void LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        SetContextMenu(Array.Empty<MenuItem>());
+    }
+}

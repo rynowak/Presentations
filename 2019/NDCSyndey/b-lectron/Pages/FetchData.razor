@@ -1,0 +1,71 @@
+﻿@page "/fetchdata"
+@inject WeatherForecastService ForecastService
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [CascadingParameter] ElectronMenu Menu { get; set; }
+
+    private WeatherForecast[] forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+
+        Menu.SetContextMenu(new MenuItem()
+        {
+            Label = "Export to Excel...",
+            Click = Export,
+        });
+    }
+
+    void Export()
+    {
+        using (var package = new ExcelPackage())
+        {
+            var worksheet = package.Workbook.Worksheets.Add("Weather");
+            worksheet.Cells.LoadFromCollection(forecasts, PrintHeaders: true);
+
+            var filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".xlsx");
+            package.SaveAs(new FileInfo(filePath));
+
+            Process.Start(new ProcessStartInfo()
+            {
+                FileName = filePath,
+                UseShellExecute = true,
+                CreateNoWindow = true,
+            });
+        }
+    }
+}

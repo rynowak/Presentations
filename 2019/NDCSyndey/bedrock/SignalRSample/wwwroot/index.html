@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+</head>
+
+<body>
+
+    <ul id="messagesList">
+    </ul>
+    <div>
+        <form id="chatform" onsubmit="return send()">
+            <input id="messagebox" type="text" />
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <script src="https://unpkg.com/@microsoft/signalr@3.0.0/dist/browser/signalr.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("chat")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on("Send", (user, message) => {
+            const li = document.createElement("li");
+            li.textContent = user + ": " + message;
+            document.getElementById("messagesList").appendChild(li);
+        });
+
+        function send() {
+            const form = document.getElementById("chatform");
+            const box = document.getElementById("messagebox");
+
+            connection.invoke("Send", "websocket", box.value).catch(err => console.error(err.toString()));
+            form.reset();
+            return false;
+        }
+
+        connection.start().then(function () {
+            console.log("connected");
+        });
+    </script>
+</body>
+</html>
