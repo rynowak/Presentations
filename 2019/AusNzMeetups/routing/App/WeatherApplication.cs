@@ -9,7 +9,8 @@ public class WeatherApplication : Application
 {
     public static void Main(string[] args) => Run<WeatherApplication>(args);
 
-    public override void ConfigureServices(IServiceCollection services) => services.AddSingleton<WeatherSuperComputer>();
+    public override void ConfigureServices(IServiceCollection services) 
+        => services.AddSingleton<WeatherSuperComputer>();
 
     public override void Configure(IApplicationBuilder app)
     {
@@ -26,14 +27,16 @@ public class WeatherApplication : Application
 
             endpoints.MapGet("/weather/{place}", context =>
             {
-                var forecast = superComputer.GetForecast(context.Request.RouteValues.Get<string>("place"));
+                var place = (string)context.Request.RouteValues["place"];
+                var forecast = superComputer.GetForecast(place);
                 return context.Response.WriteJsonAsync(forecast);
             });
 
             endpoints.MapPost("/weather/{place}", async context =>
             {
+                var place = (string)context.Request.RouteValues["place"];
                 var forecast = await context.Request.ReadJsonAsync<WeatherForecast>();
-                superComputer.UpdateForecast(context.Request.RouteValues.Get<string>("place"), forecast);
+                superComputer.UpdateForecast(place, forecast);
             });
         });
     }
