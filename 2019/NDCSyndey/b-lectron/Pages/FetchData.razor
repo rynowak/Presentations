@@ -35,14 +35,20 @@ else
     </table>
 }
 
-<button @onclick="Export">Export Data</button>
-
 @code {
     private WeatherForecast[] forecasts;
+
+    [CascadingParameter] ElectronMenu Menu { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+
+        Menu.SetContextMenu(new MenuItem()
+        {
+            Label = "Export Data",
+            Click = Export,
+        });
     }
 
     void Export()
