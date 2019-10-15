@@ -13,10 +13,7 @@ namespace SignalRClientSample
                 .WithEndPoint(new IPEndPoint(IPAddress.Loopback, 5006))
                 .Build();
 
-            connection.On<string, string>("Send", (user, message) =>
-            {
-                Console.WriteLine($"{user}: {message}");
-            });
+            connection.On<string, string>("Send", OnMessage);
 
             await connection.StartAsync();
 
@@ -24,8 +21,13 @@ namespace SignalRClientSample
             while (true)
             {
                 var message = Console.ReadLine();
-                await connection.SendAsync("Send", "tcp", message);
+                await connection.SendAsync("Send", "tcp console client", message);
             }
+        }
+
+        private static void OnMessage(string user, string message)
+        {
+            Console.WriteLine($"{user}: {message}");
         }
     }
 }

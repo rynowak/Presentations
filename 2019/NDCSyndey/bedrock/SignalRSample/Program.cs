@@ -17,9 +17,14 @@ namespace SignalRSample
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                    // Giving Kestrel some additional instructions
                     webBuilder.ConfigureKestrel(kestrel =>
                     {
-                        kestrel.Listen(IPAddress.Loopback, 5000);
+                        // Listen normally (do HTTP and run middleware)
+                        kestrel.Listen(IPAddress.Loopback, 5000); 
+
+                        // Listen and hand it to SignalR directly
                         kestrel.Listen(IPAddress.Loopback, 5006, builder => builder.UseHub<Chat>());
                     });
                 });
