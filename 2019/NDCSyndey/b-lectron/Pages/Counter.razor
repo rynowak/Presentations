@@ -1,0 +1,24 @@
+﻿@page "/counter"
+@inject NotificationService Notification
+
+<h1>Counter</h1>
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    private async Task IncrementCount()
+    {
+        currentCount++;
+
+        if (currentCount >= 10)
+        {
+            await Notification.ShowAsync(
+                "That's really a lot don't you think?",
+                $"{currentCount} is just too many for any one person.");
+        }
+    }
+}
