@@ -1,0 +1,15 @@
+﻿@page "/typing"
+<h3>Typing</h3>
+
+<div>
+    onchange: <input type="text" @bind="onchange" />
+</div>
+
+<div>
+    oninput: <input type="text" @bind="oninput" @bind:event="oninput" />
+</div>
+
+@code {
+    string onchange;
+    string oninput;
+}

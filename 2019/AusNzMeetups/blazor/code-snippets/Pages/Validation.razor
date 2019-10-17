@@ -1,0 +1,46 @@
+﻿@using System.ComponentModel.DataAnnotations
+@page "/validation"
+<h3>Validation</h3>
+<p>Place your order please</p>
+
+<EditForm Model="order">
+    <DataAnnotationsValidator />
+
+    <div>
+        Your Name: <InputText @bind-Value="order.Name" />
+    </div>
+    <div>
+        Widget Size: <InputText @bind-Value="order.Size" />
+    </div>
+    <div>
+        Delivery Address: <InputText @bind-Value="order.DeliveryAddress" />
+    </div>
+    <div>
+        Count: <InputNumber @bind-Value="order.Count" />
+    </div>
+
+    <button type="submit">Place Order!</button>
+</EditForm>
+
+@code {
+    WidgetOrder order = new WidgetOrder();
+
+
+    private class WidgetOrder
+    {
+        [Required]
+        [StringLength(30, MinimumLength = 3)]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(30, MinimumLength = 3)]
+        public string Size { get; set; }
+
+        [Required]
+        [StringLength(30, MinimumLength = 3)]
+        public string DeliveryAddress { get; set; }
+
+        [Range(1, 1000)]
+        public int Count { get; set; }
+    }
+}
