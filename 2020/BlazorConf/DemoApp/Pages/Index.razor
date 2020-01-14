@@ -1,0 +1,60 @@
+﻿@page "/"
+@using System.Diagnostics
+@using System.Threading
+@implements IDisposable
+@inject ConnectionTracker Connections
+@inject IJSRuntime JS
+
+
+<h1>Connection Info</h1>
+
+<p>Latency: @(latency.ToString("0000.00"))ms</p>
+<p>Active Connections: @activeConnections</p>
+<p>Updated at: @updatedAt</p>
+
+<button @onclick="ForceGC">Force GC</button>
+
+@code {
+    double latency;
+    int activeConnections;
+    DateTime? updatedAt;
+
+    Timer timer;
+
+    protected override void OnInitialized()
+    {
+        timer = new Timer(Timer_Tick, state: null, dueTime: TimeSpan.FromSeconds(3), period: TimeSpan.FromSeconds(3));
+    }
+
+    void IDisposable.Dispose()
+    {
+        timer.Dispose();
+    }
+
+    async void Timer_Tick(object state)
+    {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        try
+        {
+            await JS.InvokeVoidAsync("ping");
+            latency = stopwatch.ElapsedMilliseconds;
+        }
+        catch (Exception)
+        {
+        }
+
+        activeConnections = Connections.ActiveConnections;
+
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+            updatedAt = DateTime.Now;
+        });
+    }
+
+    void ForceGC()
+    {
+        GC.Collect();
+    }
+}

@@ -1,0 +1,17 @@
+﻿@page "/counter"
+
+<h1>Counter</h1>
+
+<FancySpan IsBold="@(currentCount % 2 == 0)">So exciting</FancySpan>
+<p>Current count: @currentCount</p>
+
+<button id="clicker" class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
