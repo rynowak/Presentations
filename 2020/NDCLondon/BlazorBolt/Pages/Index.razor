@@ -1,0 +1,53 @@
+﻿@page "/"
+@inject Generator Generator
+
+<h1>BlazorBolt</h1>
+
+<TabSet>
+    @foreach (var file in files)
+    {
+        <RazorDisplayTab File="@file" />
+    }
+    <AddFileTab AddTab="AddFile" />
+</TabSet>
+
+@code 
+{
+    List<FileState> files = new List<FileState>();
+
+    protected override void OnInitialized()
+    {
+        files.Add(new FileState("Index.razor"));
+        files.Add(new FileState("_Imports.razor")
+        {
+            Content =
+@"@using System.Net.Http
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@using Test
+@namespace Test
+"
+        });
+
+        foreach (var file in files)
+        {
+            Generator.Add(file.FilePath, file.Content);
+        }
+
+        foreach (var file in files)
+        {
+            // Update the generated code to populate the declarations.
+            Generator.Update(file.FilePath, file.Content);
+        }
+    }
+
+    void AddFile(string filename)
+    {
+        var file = new FileState(filename);
+        files.Add(file);
+        Generator.Add(file.FilePath, file.Content);
+        Generator.Update(file.FilePath, file.Content);
+    }
+}

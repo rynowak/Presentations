@@ -1,0 +1,18 @@
+<Tab Title="+">
+    <EditForm Model="this" OnValidSubmit="OnValidSubmit">
+        <div>Enter a filename: <InputText @bind-Value="@filename" />.razor</div>
+        <button type="submit">Add</button>
+    </EditForm>
+</Tab>
+
+@code {
+    [Parameter] public EventCallback<string> AddTab { get; set; }
+
+    string filename;
+
+    async Task OnValidSubmit()
+    {
+        await AddTab.InvokeAsync(filename + ".razor");
+        filename = null;
+    }
+}

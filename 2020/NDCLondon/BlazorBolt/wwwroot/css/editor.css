@@ -1,0 +1,28 @@
+.razor-display {
+    display: grid;
+    column-count: 2;
+    grid-template-rows: min-content 500px;
+    gap: 10px 20px;
+    min-height: 500px;
+}
+
+.razor-editor {
+    grid-column: 1;
+    grid-row: 2;
+    resize: none;
+    width: 100%;
+    font-family: monospace;
+}
+
+.razor-output {
+    grid-column: 2;
+    grid-row: 2;
+    resize: none;
+    width: 100%;
+    font-family: monospace;
+}
+
+.razor-output-selector {
+    grid-column: 2;
+    grid-row: 1;
+}

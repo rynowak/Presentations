@@ -1,0 +1,84 @@
+@using Microsoft.AspNetCore.Razor.Language
+@inject Generator Generator
+@inject IJSRuntime JS
+@implements IDisposable
+
+<div class="razor-display">
+    <textarea class="razor-editor" @ref="element" value="@File.Content"></textarea>
+
+    <select @bind="@SelectedOutput" class="razor-output-selector">
+        <option value="@OutputKind.Syntax">Syntax Tree</option>
+        <option value="@OutputKind.IR">Intermediate Representation</option>
+        <option value="@OutputKind.CSharp">Generated C#</option>
+    </select>
+    <textarea class="razor-output" value="@output" readonly></textarea>
+</div>
+
+@code {
+    [Parameter] public FileState File { get; set; }
+
+    OutputKind selectedOutput = OutputKind.CSharp;
+    OutputKind SelectedOutput
+    {
+        get => selectedOutput;
+        set
+        {
+            selectedOutput = value;
+            output = GetOutput();
+        }
+    }
+
+    string output;
+    ElementReference element;
+    DotNetObjectReference<RazorDisplay> self;
+
+    protected override void OnParametersSet()
+    {
+        File.Generated = Generator.Update(File.FilePath, File.Content);
+        output = GetOutput();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstTime)
+    {
+        if (firstTime)
+        {
+            self = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("debounceElement", element, "input", self, "ContentChanged");
+        }
+    }
+
+    void IDisposable.Dispose() => self?.Dispose();
+
+    [JSInvokable]
+    public void ContentChanged(string value)
+    {
+        File.Content = value;
+        File.Generated = Generator.Update(File.FilePath, File.Content);
+        output = GetOutput();
+        StateHasChanged();
+    }
+
+    private string GetOutput()
+    {
+        switch (selectedOutput)
+        {
+            case OutputKind.Syntax:
+                return Formatter.FormatSyntaxTree(File.Generated);
+
+            case OutputKind.IR:
+                return Formatter.FormatDocumentNode(File.Generated);
+
+            case OutputKind.CSharp:
+                return File.Generated.GetCSharpDocument().GeneratedCode;
+        }
+
+        throw new ArgumentException();
+    }
+
+    private enum OutputKind
+    {
+        Syntax,
+        IR,
+        CSharp,
+    }
+}
