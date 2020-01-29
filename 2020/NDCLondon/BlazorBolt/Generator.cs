@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.CodeAnalysis;
@@ -17,6 +19,8 @@ namespace BlazorBolt
             Declarations = new Dictionary<string, string>();
             References = new List<MetadataReference>();
 
+            GC.KeepAlive(typeof(EditForm));
+
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 if (!assembly.IsDynamic && assembly.Location != null)
@@ -24,11 +28,6 @@ namespace BlazorBolt
                     References.Add(MetadataReference.CreateFromFile(assembly.Location));
                 }
             }
-            
-            //References.Add(MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
-            //References.Add(MetadataReference.CreateFromFile(typeof(List<>).Assembly.Location));
-            //References.Add(MetadataReference.CreateFromFile(typeof(ComponentBase).Assembly.Location));
-            //References.Add(MetadataReference.CreateFromFile(typeof(BindAttributes).Assembly.Location));
 
             BaseCompilation = CSharpCompilation.Create(
                 assemblyName: "__Test",
