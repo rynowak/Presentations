@@ -1,0 +1,480 @@
+---
+apiVersion: "v1"
+kind: "List"
+items:
+- apiVersion: "v1"
+  kind: "Service"
+  metadata:
+    annotations:
+      fabric8.io/iconUrl: "https://cdn.rawgit.com/fabric8io/fabric8-ipaas/master/kafka/src/main/fabric8/icon.png"
+      fabric8.io/git-commit: "500219733b1151415686940f4b893d7add206822"
+      fabric8.io/git-branch: "release-v2.2.153"
+      fabric8.io/build-id: "2"
+      fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/500219733b1151415686940f4b893d7add206822"
+      fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/2"
+    labels:
+      provider: "fabric8"
+      project: "kafka"
+      version: "2.2.153"
+      group: "io.fabric8.ipaas.apps"
+    name: "kafka"
+  spec:
+    ports:
+    - port: 9092
+      protocol: "TCP"
+      targetPort: 9092
+    selector:
+      project: "kafka"
+      provider: "fabric8"
+      group: "io.fabric8.ipaas.apps"
+    type: "LoadBalancer"
+- apiVersion: "v1"
+  kind: "Service"
+  metadata:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/prometheus"
+      prometheus.io/port: "9411"
+      fabric8.io/git-commit: "78bd65851c7d9e22652957107fc339a55f80b606"
+      fabric8.io/git-branch: "release-v0.1.5"
+      fabric8.io/build-id: "3"
+      fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/78bd65851c7d9e22652957107fc339a55f80b606"
+      fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/3"
+    labels:
+      provider: "fabric8"
+      project: "zipkin"
+      version: "0.1.5"
+      group: "io.fabric8.zipkin"
+    name: "zipkin"
+  spec:
+    ports:
+    - port: 9411
+      protocol: "TCP"
+      targetPort: 9411
+    selector:
+      project: "zipkin"
+      provider: "fabric8"
+      group: "io.fabric8.zipkin"
+    type: "LoadBalancer"
+- apiVersion: "v1"
+  kind: "Service"
+  metadata:
+    annotations:
+      fabric8.io/git-commit: "78bd65851c7d9e22652957107fc339a55f80b606"
+      fabric8.io/git-branch: "release-v0.1.5"
+      fabric8.io/build-id: "3"
+      fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/78bd65851c7d9e22652957107fc339a55f80b606"
+      fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/3"
+    labels:
+      provider: "fabric8"
+      project: "zipkin-mysql"
+      version: "0.1.5"
+      group: "io.fabric8.zipkin"
+    name: "zipkin-mysql"
+  spec:
+    ports:
+    - port: 3306
+      protocol: "TCP"
+      targetPort: 3306
+    selector:
+      project: "zipkin-mysql"
+      provider: "fabric8"
+      group: "io.fabric8.zipkin"
+    type: "LoadBalancer"
+- apiVersion: "v1"
+  kind: "Service"
+  metadata:
+    annotations:
+      fabric8.io/iconUrl: "https://cdn.rawgit.com/fabric8io/fabric8-ipaas/master/zookeeper/src/main/fabric8/icon.png"
+      fabric8.io/git-commit: "500219733b1151415686940f4b893d7add206822"
+      fabric8.io/git-branch: "release-v2.2.153"
+      fabric8.io/build-id: "2"
+      fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/500219733b1151415686940f4b893d7add206822"
+      fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/2"
+    labels:
+      provider: "fabric8"
+      project: "zookeeper"
+      version: "2.2.153"
+      group: "io.fabric8.ipaas.apps"
+    name: "zookeeper"
+  spec:
+    ports:
+    - name: "client"
+      port: 2181
+      targetPort: 2181
+    selector:
+      project: "zookeeper"
+      provider: "fabric8"
+      group: "io.fabric8.ipaas.apps"
+- apiVersion: "v1"
+  kind: "PersistentVolumeClaim"
+  metadata:
+    labels:
+      provider: "fabric8"
+      project: "zipkin-mysql"
+      version: "0.1.5"
+      group: "io.fabric8.zipkin"
+    name: "mysql-data"
+  spec:
+    accessModes:
+    - "ReadWriteOnce"
+    resources:
+      requests:
+        storage: "100Mi"
+    volumeName: "mysql-data"
+- apiVersion: "v1"
+  kind: "ConfigMap"
+  metadata:
+    labels:
+      provider: "fabric8"
+      project: "zipkin-mysql"
+      version: "0.1.5"
+      group: "io.fabric8.zipkin"
+    name: "zipkin-mysql-cnf"
+  data:
+    custom.cnf: "[mysqld]\nsql-mode=\"\"\n"
+- apiVersion: "v1"
+  kind: "ConfigMap"
+  metadata:
+    labels:
+      provider: "fabric8"
+      project: "zipkin-mysql"
+      version: "0.1.5"
+      group: "io.fabric8.zipkin"
+    name: "zipkin-mysql-initdb"
+  data:
+    init.sql: "CREATE TABLE IF NOT EXISTS zipkin_spans (\n  `trace_id` BIGINT NOT\
+      \ NULL,\n  `id` BIGINT NOT NULL,\n  `name` VARCHAR(255) NOT NULL,\n  `parent_id`\
+      \ BIGINT,\n  `debug` BIT(1),\n  `start_ts` BIGINT COMMENT 'Span.timestamp():\
+      \ epoch micros used for endTs query and to implement TTL',\n  `duration` BIGINT\
+      \ COMMENT 'Span.duration(): micros used for minDuration and maxDuration query'\n\
+      ) ENGINE=InnoDB ROW_FORMAT=COMPRESSED;\n\nALTER TABLE zipkin_spans ADD UNIQUE\
+      \ KEY(`trace_id`, `id`) COMMENT 'ignore insert on duplicate';\nALTER TABLE zipkin_spans\
+      \ ADD INDEX(`trace_id`, `id`) COMMENT 'for joining with zipkin_annotations';\n\
+      ALTER TABLE zipkin_spans ADD INDEX(`trace_id`) COMMENT 'for getTracesByIds';\n\
+      ALTER TABLE zipkin_spans ADD INDEX(`name`) COMMENT 'for getTraces and getSpanNames';\n\
+      ALTER TABLE zipkin_spans ADD INDEX(`start_ts`) COMMENT 'for getTraces ordering\
+      \ and range';\n\nCREATE TABLE IF NOT EXISTS zipkin_annotations (\n  `trace_id`\
+      \ BIGINT NOT NULL COMMENT 'coincides with zipkin_spans.trace_id',\n  `span_id`\
+      \ BIGINT NOT NULL COMMENT 'coincides with zipkin_spans.id',\n  `a_key` VARCHAR(255)\
+      \ NOT NULL COMMENT 'BinaryAnnotation.key or Annotation.value if type == -1',\n\
+      \  `a_value` BLOB COMMENT 'BinaryAnnotation.value(), which must be smaller than\
+      \ 64KB',\n  `a_type` INT NOT NULL COMMENT 'BinaryAnnotation.type() or -1 if\
+      \ Annotation',\n  `a_timestamp` BIGINT COMMENT 'Used to implement TTL; Annotation.timestamp\
+      \ or zipkin_spans.timestamp',\n  `endpoint_ipv4` INT COMMENT 'Null when Binary/Annotation.endpoint\
+      \ is null',\n  `endpoint_ipv6` BINARY(16) COMMENT 'Null when Binary/Annotation.endpoint\
+      \ is null, or no IPv6 address',\n  `endpoint_port` SMALLINT COMMENT 'Null when\
+      \ Binary/Annotation.endpoint is null',\n  `endpoint_service_name` VARCHAR(255)\
+      \ COMMENT 'Null when Binary/Annotation.endpoint is null'\n) ENGINE=InnoDB ROW_FORMAT=COMPRESSED;\n\
+      \nALTER TABLE zipkin_annotations ADD UNIQUE KEY(`trace_id`, `span_id`, `a_key`,\
+      \ `a_timestamp`) COMMENT 'Ignore insert on duplicate';\nALTER TABLE zipkin_annotations\
+      \ ADD INDEX(`trace_id`, `span_id`) COMMENT 'for joining with zipkin_spans';\n\
+      ALTER TABLE zipkin_annotations ADD INDEX(`trace_id`) COMMENT 'for getTraces/ByIds';\n\
+      ALTER TABLE zipkin_annotations ADD INDEX(`endpoint_service_name`) COMMENT 'for\
+      \ getTraces and getServiceNames';\nALTER TABLE zipkin_annotations ADD INDEX(`a_type`)\
+      \ COMMENT 'for getTraces';\nALTER TABLE zipkin_annotations ADD INDEX(`a_key`)\
+      \ COMMENT 'for getTraces';\n\nCREATE TABLE IF NOT EXISTS zipkin_dependencies\
+      \ (\n  `day` DATE NOT NULL,\n  `parent` VARCHAR(255) NOT NULL,\n  `child` VARCHAR(255)\
+      \ NOT NULL,\n  `call_count` BIGINT\n) ENGINE=InnoDB ROW_FORMAT=COMPRESSED;\n\
+      \nALTER TABLE zipkin_dependencies ADD UNIQUE KEY(`day`, `parent`, `child`);\n\
+      GRANT SELECT, INSERT, UPDATE, DELETE ON zipkin.* TO zipkin@'%' IDENTIFIED BY\
+      \ 'zipkin' WITH GRANT OPTION ;\nFLUSH PRIVILEGES;\n"
+- apiVersion: apps/v1
+  kind: "Deployment"
+  metadata:
+    annotations:
+      fabric8.io/iconUrl: "https://cdn.rawgit.com/fabric8io/fabric8-ipaas/master/kafka/src/main/fabric8/icon.png"
+      fabric8.io/git-commit: "500219733b1151415686940f4b893d7add206822"
+      fabric8.io/metrics-path: "dashboard/file/kubernetes-pods.json/?var-project=kafka&var-version=2.2.153"
+      fabric8.io/build-id: "2"
+      fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/2"
+      fabric8.io/git-branch: "release-v2.2.153"
+      fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/500219733b1151415686940f4b893d7add206822"
+    labels:
+      provider: "fabric8"
+      project: "kafka"
+      version: "2.2.153"
+      group: "io.fabric8.ipaas.apps"
+    name: "kafka"
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        provider: "fabric8"
+        project: "kafka"
+        group: "io.fabric8.ipaas.apps"
+    template:
+      metadata:
+        annotations:
+          fabric8.io/git-commit: "500219733b1151415686940f4b893d7add206822"
+          fabric8.io/metrics-path: "dashboard/file/kubernetes-pods.json/?var-project=kafka&var-version=2.2.153"
+          fabric8.io/build-id: "2"
+          fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/2"
+          fabric8.io/iconUrl: "https://cdn.rawgit.com/fabric8io/fabric8-ipaas/master/kafka/src/main/fabric8/icon.png"
+          fabric8.io/git-branch: "release-v2.2.153"
+          fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/500219733b1151415686940f4b893d7add206822"
+        labels:
+          provider: "fabric8"
+          project: "kafka"
+          version: "2.2.153"
+          group: "io.fabric8.ipaas.apps"
+      spec:
+        containers:
+        - env:
+          - name: "KUBERNETES_NAMESPACE"
+            valueFrom:
+              fieldRef:
+                fieldPath: "metadata.namespace"
+          image: "fabric8/kafka:2.2.153"
+          imagePullPolicy: "IfNotPresent"
+          name: "kafka"
+          ports:
+          - containerPort: 9092
+            name: "kafka"
+          - containerPort: 8778
+            name: "jolokia"
+          resources:
+            limits:
+              cpu: "0"
+              memory: "0"
+            requests:
+              cpu: "0"
+              memory: "0"
+          securityContext:
+            privileged: false
+          volumeMounts:
+          - mountPath: "/opt/kafka/logs"
+            name: "logs"
+            readOnly: false
+        volumes:
+        - emptyDir:
+            medium: "Memory"
+          name: "logs"
+- apiVersion: apps/v1
+  kind: "Deployment"
+  metadata:
+    annotations:
+      fabric8.io/git-commit: "78bd65851c7d9e22652957107fc339a55f80b606"
+      fabric8.io/git-branch: "release-v0.1.5"
+      fabric8.io/metrics-path: "dashboard/file/kubernetes-pods.json/?var-project=zipkin&var-version=0.1.5"
+      fabric8.io/build-id: "3"
+      fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/78bd65851c7d9e22652957107fc339a55f80b606"
+      fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/3"
+    labels:
+      provider: "fabric8"
+      project: "zipkin"
+      version: "0.1.5"
+      group: "io.fabric8.zipkin"
+    name: "zipkin"
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        provider: "fabric8"
+        project: "zipkin"
+        group: "io.fabric8.zipkin"
+    template:
+      metadata:
+        annotations:
+          fabric8.io/git-commit: "78bd65851c7d9e22652957107fc339a55f80b606"
+          fabric8.io/metrics-path: "dashboard/file/kubernetes-pods.json/?var-project=zipkin&var-version=0.1.5"
+          fabric8.io/build-id: "3"
+          fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/3"
+          fabric8.io/git-branch: "release-v0.1.5"
+          fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/78bd65851c7d9e22652957107fc339a55f80b606"
+        labels:
+          provider: "fabric8"
+          project: "zipkin"
+          version: "0.1.5"
+          group: "io.fabric8.zipkin"
+      spec:
+        containers:
+        - env:
+          - name: "STORAGE_PORT_9042_TCP_ADDR"
+            value: "zipkin-cassandra:9411"
+          - name: "STORAGE_PORT_3306_TCP_ADDR"
+            value: "zipkin-mysql:3306"
+          - name: "STORAGE_TYPE"
+            value: "mysql"
+          - name: "TRANSPORT_TYPE"
+            value: "http"
+          - name: "KUBERNETES_NAMESPACE"
+            valueFrom:
+              fieldRef:
+                fieldPath: "metadata.namespace"
+          image: "openzipkin/zipkin:1.13.0"
+          name: "zipkin"
+          readinessProbe:
+            httpGet:
+              path: "/api/v1/services"
+              port: 9411
+            initialDelaySeconds: 5
+          resources:
+            limits:
+              cpu: "0"
+              memory: "0"
+            requests:
+              cpu: "0"
+              memory: "0"
+- apiVersion: apps/v1
+  kind: "Deployment"
+  metadata:
+    annotations:
+      fabric8.io/git-commit: "78bd65851c7d9e22652957107fc339a55f80b606"
+      fabric8.io/git-branch: "release-v0.1.5"
+      fabric8.io/metrics-path: "dashboard/file/kubernetes-pods.json/?var-project=zipkin-mysql&var-version=0.1.5"
+      fabric8.io/build-id: "3"
+      fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/78bd65851c7d9e22652957107fc339a55f80b606"
+      fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/3"
+    labels:
+      provider: "fabric8"
+      project: "zipkin-mysql"
+      version: "0.1.5"
+      group: "io.fabric8.zipkin"
+    name: "zipkin-mysql"
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        provider: "fabric8"
+        project: "zipkin-mysql"
+        group: "io.fabric8.zipkin"
+    template:
+      metadata:
+        annotations:
+          fabric8.io/git-commit: "78bd65851c7d9e22652957107fc339a55f80b606"
+          fabric8.io/metrics-path: "dashboard/file/kubernetes-pods.json/?var-project=zipkin-mysql&var-version=0.1.5"
+          fabric8.io/build-id: "3"
+          fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/3"
+          fabric8.io/git-branch: "release-v0.1.5"
+          fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/78bd65851c7d9e22652957107fc339a55f80b606"
+        labels:
+          provider: "fabric8"
+          project: "zipkin-mysql"
+          version: "0.1.5"
+          group: "io.fabric8.zipkin"
+      spec:
+        containers:
+        - env:
+          - name: "MYSQL_USER"
+            value: "zipkin"
+          - name: "MYSQL_PASSWORD"
+            value: "zipkin"
+          - name: "MYSQL_ROOT_PASSWORD"
+            value: "zipkin"
+          - name: "MYSQL_DATABASE"
+            value: "zipkin"
+          - name: "KUBERNETES_NAMESPACE"
+            valueFrom:
+              fieldRef:
+                fieldPath: "metadata.namespace"
+          image: "mysql:5.7"
+          name: "zipkin-mysql"
+          readinessProbe:
+            initialDelaySeconds: 5
+            tcpSocket:
+              port: 3306
+          resources:
+            limits:
+              cpu: "0"
+              memory: "0"
+            requests:
+              cpu: "0"
+              memory: "0"
+          volumeMounts:
+          - mountPath: "/var/lib/mysql"
+            name: "mysql-data"
+          - mountPath: "/docker-entrypoint-initdb.d/"
+            name: "mysql-init-script"
+          - mountPath: "/etc/mysql/conf.d/"
+            name: "mysql-confd"
+        volumes:
+        - name: "mysql-data"
+          persistentVolumeClaim:
+            claimName: "mysql-data"
+        - configMap:
+            name: "zipkin-mysql-initdb"
+          name: "mysql-init-script"
+        - configMap:
+            name: "zipkin-mysql-cnf"
+          name: "mysql-confd"
+- apiVersion: apps/v1
+  kind: "Deployment"
+  metadata:
+    annotations:
+      fabric8.io/iconUrl: "https://cdn.rawgit.com/fabric8io/fabric8-ipaas/master/zookeeper/src/main/fabric8/icon.png"
+      fabric8.io/git-commit: "500219733b1151415686940f4b893d7add206822"
+      fabric8.io/metrics-path: "dashboard/file/kubernetes-pods.json/?var-project=zookeeper&var-version=2.2.153"
+      fabric8.io/build-id: "2"
+      fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/2"
+      fabric8.io/git-branch: "release-v2.2.153"
+      fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/500219733b1151415686940f4b893d7add206822"
+    labels:
+      provider: "fabric8"
+      project: "zookeeper"
+      version: "2.2.153"
+      group: "io.fabric8.ipaas.apps"
+      serverId: "1"
+    name: "zookeeper"
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        provider: "fabric8"
+        project: "zookeeper"
+        group: "io.fabric8.ipaas.apps"
+    template:
+      metadata:
+        annotations:
+          fabric8.io/git-commit: "500219733b1151415686940f4b893d7add206822"
+          fabric8.io/metrics-path: "dashboard/file/kubernetes-pods.json/?var-project=zookeeper&var-version=2.2.153"
+          fabric8.io/build-id: "2"
+          fabric8.io/build-url: "http://jenkins.ux.fabric8.io/job/oss-parent/2"
+          fabric8.io/iconUrl: "https://cdn.rawgit.com/fabric8io/fabric8-ipaas/master/zookeeper/src/main/fabric8/icon.png"
+          fabric8.io/git-branch: "release-v2.2.153"
+          fabric8.io/git-url: "http://gogs.ux.fabric8.io/gogsadmin/oss-parent/commit/500219733b1151415686940f4b893d7add206822"
+        labels:
+          provider: "fabric8"
+          project: "zookeeper"
+          version: "2.2.153"
+          group: "io.fabric8.ipaas.apps"
+      spec:
+        containers:
+        - env:
+          - name: "ENSEMBLE_SIZE"
+            value: "1"
+          - name: "KUBERNETES_NAMESPACE"
+            valueFrom:
+              fieldRef:
+                fieldPath: "metadata.namespace"
+          image: "fabric8/zookeeper:2.2.153"
+          imagePullPolicy: "IfNotPresent"
+          name: "zookeeper"
+          ports:
+          - containerPort: 2181
+            name: "zkclient"
+          - containerPort: 8778
+            name: "jolokia"
+          resources:
+            limits:
+              cpu: "0"
+              memory: "0"
+            requests:
+              cpu: "0"
+              memory: "0"
+          securityContext:
+            privileged: false
+          volumeMounts:
+          - mountPath: "/opt/zookeeper/data"
+            name: "data"
+            readOnly: false
+          - mountPath: "/opt/zookeeper/log"
+            name: "log"
+            readOnly: false
+        volumes:
+        - emptyDir:
+            medium: "Memory"
+          name: "data"
+        - emptyDir:
+            medium: "Memory"
+          name: "log"

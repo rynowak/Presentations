@@ -1,0 +1,11 @@
+two terminals open to this folder
+open code to the demo_app folder
+deploy demo_app0.yaml
+open Startup.cs in code
+open demo_app1.yaml in code
+
+terminal open to blazing backend
+browser open to blazing pizza
+browser open to pizza manager
+browser open to zipkin
+browser open to grafana
