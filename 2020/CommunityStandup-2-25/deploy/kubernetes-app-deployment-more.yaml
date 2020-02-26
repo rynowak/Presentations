@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetesapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kubernetesapp
+  template:
+    metadata:
+      labels:
+        app: kubernetesapp
+    spec:
+      containers:
+      - name: app
+        image: rynowak/kubernetesapp:latest
+        env:
+        - name: APP__VALUE
+          value: A very cool and configured value
+        ports:
+        - containerPort: 80
+        readinessProbe:
+            periodSeconds: 10
+            successThreshold: 2
+            initialDelaySeconds: 3
+            httpGet:
+              path: /healthz
+              port: 80
+        volumeMounts:
+        - name: kubernetesapp-config-volume
+          mountPath: /etc/kubernetesapp-config
+      volumes:
+        - name: kubernetesapp-config-volume
+          configMap:
+            name: kubernetesapp-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetesapp
+spec:
+  selector:
+    app: kubernetesapp
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

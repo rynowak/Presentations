@@ -1,0 +1,10 @@
+apiVersion: <version>
+kind: <kind>
+metadata:
+  name: kubernetesapp
+  namespace: default
+  labels:
+    kubernetes.io/app: my-thing
+  annotations:
+    some-product.io/some-annotation: true
+spec:
