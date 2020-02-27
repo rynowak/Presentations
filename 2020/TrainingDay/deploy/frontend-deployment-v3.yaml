@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: app
+        image: rynowak/trainingday-frontend:latest
+        env:
+        - name: APP__VALUE
+          value: The second value
+        ports:
+        - containerPort: 80
+        readinessProbe:
+            periodSeconds: 8
+            successThreshold: 2
+            httpGet:
+              path: /healthz
+              port: 80
+        volumeMounts:
+        - name: frontend-config-volume
+          mountPath: /etc/frontend-config
+      volumes:
+        - name: frontend-config-volume
+          configMap:
+            name: frontend-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

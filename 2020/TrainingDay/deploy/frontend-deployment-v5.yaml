@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: app
+        image: rynowak/trainingday-frontend:latest
+        env:
+        - name: APP__VALUE
+          value: The second value
+        ports:
+        - containerPort: 80
+        readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+        volumeMounts:
+        - name: frontend-config-volume
+          mountPath: /etc/frontend-config
+      volumes:
+        - name: frontend-config-volume
+          configMap:
+            name: frontend-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubernetesapp
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+  - hosts:
+    - frontend.51.143.53.12.nip.io
+    secretName: frontend-tls-secret
+  rules:
+  - host: frontend.51.143.53.12.nip.io
+    http:
+      paths:
+      - backend:
+          serviceName: frontend
+          servicePort: 80
+        path: /
