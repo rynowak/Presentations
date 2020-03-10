@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    #server: https://acme-v02.api.letsencrypt.org/directory # production
+    server: https://acme-staging-v02.api.letsencrypt.org/directory # staging
+    email: rynowak@microsoft.com # replace this with your email
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+       - http01:
+           ingress:
+             class:  nginx

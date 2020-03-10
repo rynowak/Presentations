@@ -1,0 +1,15 @@
+Start with frontend-deployment-v2, backend-deployment-v1 and frontend-config
+
+Step 1: use curl-it to show we can hit the service and get load balanced
+Step 2: terminal inside the pod to see the config file on disk
+Step 3: talk about health checks
+Step 4: talk about resources
+Step 5: talk about rolling update
+
+Step 6: deploy and show a rolling deploying
+
+Step 7: deploy and show ingress (show headers in browser)
+
+Step 8: JUSTIN
+
+Step 9: Let's add TLS - deploy and show TLS
