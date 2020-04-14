@@ -1,0 +1,12 @@
+why route-to-code as a programming model?
+ - simple style
+ - easy to learn
+ - you might just like it
+ - you might need it:
+    - https://i.imgur.com/DDKqNlG.png
+    - rich frameworks have lots of features and opinions - those add overhead
+    - lower level frameworks give you more control - but you have more responsibilities
+ - if this isn't for you that's ok - it's just another option
+    - will you have 30 endpoints?
+    - do you need swagger/openapi?
+    - will you write unit tests or integration tests? 

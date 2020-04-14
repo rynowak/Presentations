@@ -1,0 +1,13 @@
+Show old vs new comparison
+
+Show things that don’t work
+Auth on health checks
+gRPC
+
+A few slides
+
+Demo: viewing endpoints
+
+Performance data
+
+Show how it works

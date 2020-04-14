@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  forecast:
+    image: rynowak/forecastapp-route-to-code
+    container_name: forecast
+    ports:
+      - "5001:80"
+    build:
+      context: ./forecastapp-route-to-code
+
+  result:
+    image: rynowak/weatherapp-route-to-code
+    container_name: weather
+    ports:
+      - "5000:80"
+    depends_on:
+      - forecast
+    environment:
+    - "FORECAST_SERVICE_URI=http://forecast:80/"
+    build:
+      context: ./weatherapp-route-to-code

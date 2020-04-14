@@ -1,0 +1,24 @@
+links: https://github.com/codesenberg/bombardier
+
+Easy load-testing
+- What can you do with a single machine that will give you a reasonable payoff?
+- Control factors that throw off your data:
+    - Use a modern tool like wrk/wrk2 or bombardier (don't use ab)
+    - There's a difference between tools meant to generate a lot of load vs tools meant to simulate user behavior
+    - Limit resources - don't allow competition between other processes on your machine and your workload
+- What to test?
+    - Docker/docker-compose makes it easy to test dependencies
+    - Mock or use your data dependencies (test is only as good as your mock)
+    - Expect to mostly find:
+        - Something really bad in your code
+        - Misuse of resources
+        - Things you thought were cheap are expensive
+        - Complex expensive database queries
+        - Databases can be complicated to test 
+            - you can get different results from production because of caching
+            - you can saturate the disk if you're just testing writes
+
+
+docker exec -it $(docker ps --filter "label=kind=weather" --format="{{.ID}}") dotnet counters monitor --process-id 1 System.Runtime Microsoft.AspNetCore.Hosting
+
+
