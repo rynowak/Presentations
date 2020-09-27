@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+
+  results:
+    build:
+      context: ./results
+    ports:
+    - "5001:80"
+    environment: 
+      SERVICE__WORKER__HOST: worker
+      SERVICE__WORKER__PORT: 80
+    depends_on:
+    - worker
+
+  vote:
+    build:
+      context: ./vote
+    ports:
+    - "5000:80" 
+    environment: 
+      CONNECTIONSTRINGS__REDIS: 'redis:6379'
+    depends_on:
+    - redis
+
+  worker:
+    build:
+      context: ./worker
+    environment: 
+      CONNECTIONSTRINGS__REDIS: 'redis:6379'
+      CONNECTIONSTRINGS__POSTGRES: 'Server=postgres;Port=5432;User Id=postgres;Password=pass@word1'
+    depends_on:
+    - redis
+    - postgres
+
+  redis:
+    image: redis
+  
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: pass@word1
