@@ -1,0 +1,24 @@
+@page "/"
+@inject NavigationManager Nav
+
+<h1>Welcome to the bank</h1>
+
+<EditForm OnSubmit="@OnSubmit" Model="@form">
+    Please enter your account name:
+    <InputText @bind-Value="@form.Username"/>
+    <button type="submit">Login</button>
+</EditForm>
+
+@code {
+    class AccountForm
+    {
+        public string Username { get; set; }
+    }
+
+    AccountForm form = new AccountForm();
+
+    void OnSubmit(EditContext context)
+    {
+        Nav.NavigateTo($"account/{form.Username}");
+    }
+}

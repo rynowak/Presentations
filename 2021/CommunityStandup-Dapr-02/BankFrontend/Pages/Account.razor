@@ -1,0 +1,94 @@
+@page "/account/{username}"
+@inject HttpClient HttpClient
+@inject ILogger<Account> Logger
+
+@if (loading)
+{
+    <p>Loading...</p>
+}
+else if (account == null)
+{
+    <p>Something went wrong... oh dear!</p>
+}
+else 
+{
+    <p>
+        Your account: @Username
+        Your balance: @account.Balance
+    </p>
+    <EditForm Model="@transaction">
+        <InputNumber @bind-Value="@transaction.Amount" />
+        <button @onclick="@OnDepositAsync">Deposit</button>
+        <button @onclick="@OnWithdrawAsync">Withdraw</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string Username { get; set; }
+    bool loading = true;
+    BankFrontend.Account account;
+    Transaction transaction = new Transaction();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Workaround for https://github.com/dotnet/aspnetcore/issues/29846
+            Activity.Current = new Activity("getaccount");
+            account = await HttpClient.GetFromJsonAsync<BankFrontend.Account>($"accounts/{Username}");
+        }
+        catch (HttpRequestException ex)
+        {
+            Logger.LogError(ex, "Failed to retrieve account");
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    async Task OnDepositAsync()
+    {
+        transaction.Username = Username;
+
+        try
+        {
+            Activity.Current = new Activity("deposit");
+            var response = await HttpClient.PostAsJsonAsync<Transaction>($"accounts/deposit", transaction);
+            account = await response.Content.ReadFromJsonAsync<BankFrontend.Account>();
+        }
+        catch (HttpRequestException ex)
+        {
+            Logger.LogError(ex, "Failed to deposit monies");
+            throw;
+        }
+        finally
+        {
+            transaction = new Transaction();
+            loading = false;
+        }
+    }
+
+    async Task OnWithdrawAsync()
+    {
+        transaction.Username = Username;
+
+        try
+        {
+            Activity.Current = new Activity("withdraw");
+            var response = await HttpClient.PostAsJsonAsync<Transaction>($"accounts/withdraw", transaction);
+            account = await response.Content.ReadFromJsonAsync<BankFrontend.Account>();
+        }
+        catch (HttpRequestException ex)
+        {
+            Logger.LogError(ex, "Failed to withdraw monies");
+            throw;
+        }
+        finally
+        {
+            transaction = new Transaction();
+            loading = false;
+        }
+    }
+}

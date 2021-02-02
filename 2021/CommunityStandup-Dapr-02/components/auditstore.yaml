@@ -1,0 +1,14 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: auditstore
+spec:
+  type: bindings.azure.blobstorage
+  version: v1
+  metadata:
+  - name: storageAccount
+    value: rynowakdaprdemo
+  - name: storageAccessKey
+    value: 'o79AIffqBJGknV+reoU9OKWn2Bp9lgDlktaE7laU8tdz2v9P+n0MrrTkVVq9RMIgQBbtt8BVoMklOmilYoddxg=='
+  - name: container
+    value: history
