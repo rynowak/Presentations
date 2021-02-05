@@ -9,6 +9,6 @@ spec:
   - name: storageAccount
     value: rynowakdaprdemo
   - name: storageAccessKey
-    value: 'o79AIffqBJGknV+reoU9OKWn2Bp9lgDlktaE7laU8tdz2v9P+n0MrrTkVVq9RMIgQBbtt8BVoMklOmilYoddxg=='
+    value: LOL
   - name: container
     value: history
