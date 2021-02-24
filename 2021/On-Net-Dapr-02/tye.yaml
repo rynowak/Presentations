@@ -1,0 +1,27 @@
+# tye application configuration file
+# read all about it at https://github.com/dotnet/tye
+#
+# when you've given us a try, we'd love to know what you think:
+#    https://aka.ms/AA7q20u
+#
+name: code
+extensions:
+- name: dapr
+  components-path: "./components/"
+  config: 'myconfig'
+services:
+- name: bankauditor
+  project: BankAuditor/BankAuditor.csproj
+- name: bankfrontend
+  project: BankFrontend/BankFrontend.csproj
+- name: bankserver
+  project: BankServer/BankServer.csproj
+- name: redis
+  image: redis
+  bindings:
+    - port: 6379
+- name: zipkin
+  image: openzipkin/zipkin-slim
+  bindings:
+    - port: 9411
+      protocol: http
