@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 
 namespace BankAuditor
 {
@@ -18,15 +16,6 @@ namespace BankAuditor
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDaprClient();
-
-            services.AddOpenTelemetryTracing(builder =>
-            {
-                builder
-                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("bankauditor"))
-                    .AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation()
-                    .AddZipkinExporter();
-            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger, DaprClient daprClient)

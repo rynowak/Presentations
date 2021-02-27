@@ -35,7 +35,7 @@ else
         try
         {
             // Workaround for https://github.com/dotnet/aspnetcore/issues/29846
-            //Activity.Current = new Activity("getaccount");
+            Activity.Current = null;
             account = await HttpClient.GetFromJsonAsync<BankFrontend.Account>($"accounts/{Username}");
         }
         catch (HttpRequestException ex)
@@ -54,7 +54,7 @@ else
 
         try
         {
-            //Activity.Current = new Activity("deposit");
+            Activity.Current = null;
             var response = await HttpClient.PostAsJsonAsync<Transaction>($"accounts/deposit", transaction);
             account = await response.Content.ReadFromJsonAsync<BankFrontend.Account>();
         }
@@ -76,7 +76,7 @@ else
 
         try
         {
-            //Activity.Current = new Activity("withdraw");
+            Activity.Current = null;
             var response = await HttpClient.PostAsJsonAsync<Transaction>($"accounts/withdraw", transaction);
             account = await response.Content.ReadFromJsonAsync<BankFrontend.Account>();
         }

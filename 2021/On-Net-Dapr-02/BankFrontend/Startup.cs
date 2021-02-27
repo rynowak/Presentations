@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 
 namespace BankFrontend
 {
@@ -23,17 +21,6 @@ namespace BankFrontend
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-
-            services.AddOpenTelemetryTracing(builder =>
-            {
-                builder
-                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("bankfrontend"))
-                    .AddHttpClientInstrumentation()
-                    .AddZipkinExporter();
-            });
-
-            // Register Dapr Client
-            services.AddDaprClient();
 
             // Register HttpClient
             // var uri = Configuration.GetServiceUri("bankserver");

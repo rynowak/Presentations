@@ -9,6 +9,7 @@ extensions:
 - name: dapr
   components-path: "./components/"
   config: 'myconfig'
+- name: zipkin
 services:
 - name: bankauditor
   project: BankAuditor/BankAuditor.csproj
@@ -20,8 +21,3 @@ services:
   image: redis
   bindings:
     - port: 6379
-- name: zipkin
-  image: openzipkin/zipkin-slim
-  bindings:
-    - port: 9411
-      protocol: http

@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 
 namespace BankServer
 {
@@ -18,14 +16,6 @@ namespace BankServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddDapr();
-            services.AddOpenTelemetryTracing(builder =>
-            {
-                builder
-                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("bankserver"))
-                    .AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation()
-                    .AddZipkinExporter();
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
